@@ -26,17 +26,18 @@ public class Start2020 {
         objects.put("19", new Day19());
         objects.put("20", new Day20());
         objects.put("21", new Day21());
-        //objects.put("22", new Day22());
+        objects.put("22", new Day22());
+        objects.put("23", new Day23());
     }
 
     public static void main(String[] args) {
         int day = 1;
-        if(args.length >= 1){
+        if (args.length >= 1) {
             day = Integer.parseInt(args[0]);
-        }else if(IO.fileExists("../defaultStart.txt")){
-            day = Integer.parseInt(Integer.parseInt(IO.getFile("../defaultStart.txt").replaceAll("\r\n", "")) + "");
+        } else {
+            System.err.println("No day configured");
+            return;
         }
-        System.out.println(day);
         (new Start2020()).run(day);
     }
 
@@ -59,7 +60,7 @@ public class Start2020 {
         start = System.nanoTime();
         ColorConsole.print(objects.get("" + day).partTwo());
         end = System.nanoTime();
-        totalTime += (end-start);
+        totalTime += (end - start);
         ColorConsole.print("\n/b Duration: " + (System.nanoTime() - start) + "ns" + " (" + Math.round((end - start) * 1e-6 * 10.0) / 10.0 + "ms)");
         ColorConsole.print("\n/g Total Time: " + totalTime + "ns" + " (" + Math.round((totalTime) * 1e-6 * 10.0) / 10.0 + "ms)");
         ColorConsole.print("/w");

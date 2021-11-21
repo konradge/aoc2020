@@ -179,7 +179,7 @@ public class IO {
      * @return Content of the file
      */
     public static String getInput(String filename) {
-        return getFile("./../inputs/" + filename).replace("\r", "");
+        return getFile("inputs/" + filename).replace("\r", "");
     }
 
     private static BufferedImage scaleImage(BufferedImage original, int newWidth, int newHeight) {
