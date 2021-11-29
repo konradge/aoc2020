@@ -1,7 +1,5 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.awt.List;
+import java.util.*;
 
 //Currently not working
 public class Day22 implements Day {
@@ -17,7 +15,6 @@ public class Day22 implements Day {
 
     public void resetPlayers(String input) {
         String[] in = input.split("\\n\\n");
-        System.out.println(Arrays.toString(in));
         for (int i = 0; i < in.length; i++) {
             Player p = new Player(in[i].split(":\\n")[1].split("\\n"));
             if (i == 0) {
@@ -43,6 +40,10 @@ public class Day22 implements Day {
         while (!p1.cards.isEmpty() && !p2.cards.isEmpty()) {
             nextRound(p1, p2);
         }
+        return "" + calcScore();
+    }
+
+    public int calcScore() {
         int score = 0;
         Player winner = p1.cards.isEmpty() ? p2 : p1;
 
@@ -51,46 +52,73 @@ public class Day22 implements Day {
             score += winner.cards.remove() * size;
             size--;
         }
-        return score + "";
+        return score;
     }
 
     @Override
     public String partTwo() {
         resetPlayers(input);
-
-        return "";
+        boolean winner = new Game(p1.cards, p2.cards).play();
+        return "" + calcScore();
     }
 
-    public int play(Queue<Integer> deck1, Queue<Integer> deck2, ArrayList<String> alreadyGot) {
-        String id = "p1:" + deck1.peek() + "p2:" + deck2.peek();
-        if (alreadyGot.contains(id)) {
-            //Runde zuende, Player1 gewinnt
-            return 1;
+    public static class Game {
+        private Queue<Integer> cards1, cards2;
+        private final HashMap<String, Boolean> alreadySeenCards = new HashMap<>();
+        static int openGames = 0;
+
+        public Game(Queue<Integer> cards1, Queue<Integer> cards2) {
+            this.cards1 = cards1;
+            this.cards2 = cards2;
+            openGames++;
+            //System.out.println(++openGames);
         }
-        int cardP1 = deck1.remove();
-        int cardP2 = deck2.remove();
-        if (cardP1 <= deck1.size() && cardP2 <= deck2.size()) {
-            //Spiele neues Spiel, um Gewinner herauszufinden
-            Queue<Integer> deck1Copy = new LinkedList<>(deck1);
-            Queue<Integer> deck2Copy = new LinkedList<>(deck2);
-            int winner = play(deck1Copy, deck2Copy, new ArrayList<>());
-            if (winner == 1) {
-                deck1.add(Math.max(cardP1, cardP2));
-                deck2.add(Math.min(cardP1, cardP2));
-            } else {
-                deck2.add(Math.max(cardP1, cardP2));
-                deck2.add(Math.min(cardP1, cardP2));
-            }
-        } else {
-            if (cardP1 > cardP2) {
-                //Player1 Sieger
-                return 1;
-            } else {
-                //Player2 Sieger
-                return 2;
-            }
+
+        public static boolean playGame(Queue<Integer> c1, int quantity1, Queue<Integer> c2, int quantity2) {
+            Game g = new Day22.Game(new LinkedList<>(c1.stream().toList().subList(0, quantity1)), new LinkedList<>(c2.stream().toList().subList(0, quantity2)));
+            return g.play();
         }
-        return 0;
+
+        public boolean play() {
+            int rounds = 0;
+            // true -> Player1, false -> Player2
+            boolean roundWinner = true;
+            while (!cards1.isEmpty() && !cards2.isEmpty()) {
+                rounds++;
+                if (rounds >= 500000) return true;
+                if (alreadySeenCards.getOrDefault(cards1.hashCode() + "|" + cards2.hashCode(), false)) {
+                    // Player 1 instantly wins the game!
+                    //System.out.println("Instant win!");
+                    openGames--;
+                    return true;
+                } else {
+                    alreadySeenCards.put(cards1.hashCode() + "|" + cards2.hashCode(), true);
+                    //if (alreadySeenCards.size() > 50 * 50) System.out.println(alreadySeenCards.size());
+                    // Take the two cards on top of both decks
+                    int card1 = cards1.remove();
+                    int card2 = cards2.remove();
+                    if (cards1.size() >= card1 && cards2.size() >= card2) {
+                        // Determine player by playing a new game
+                        roundWinner = playGame(cards1, card1, cards2, card2);
+                    } else {
+                        // Winner is the one with higher valued card
+                        roundWinner = (card1 > card2);
+                    }
+
+                    // Winner takes the two cards
+                    if (roundWinner) {
+                        cards1.add(card1);
+                        cards1.add(card2);
+                    } else {
+                        cards2.add(card2);
+                        cards2.add(card1);
+                    }
+                }
+            }
+            // The player with no cards looses
+            openGames--;
+            return !cards1.isEmpty();
+        }
     }
 
 

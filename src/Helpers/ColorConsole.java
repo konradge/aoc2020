@@ -20,8 +20,8 @@ public class ColorConsole {
     }
 
     /**
-     * Use \r (red) \g (green) \b (blue), \y (yellow), \c (cyan), \w (white) \\
-     * (clear)
+     * Use \r (red) \g (green) \b (blue), \y (yellow), \c (cyan), \w (white) \d
+     * (default/clear)
      *
      * @param s
      */

@@ -1,7 +1,7 @@
 import Helpers.ColorConsole;
 import Helpers.IO;
 
-import java.util.HashMap;
+import java.util.*;
 
 public class Start2020 {
     HashMap<String, Day> objects = new HashMap<>();
@@ -28,6 +28,8 @@ public class Start2020 {
         objects.put("21", new Day21());
         objects.put("22", new Day22());
         objects.put("23", new Day23());
+        objects.put("24", new Day24());
+        objects.put("25", new Day25());
     }
 
     public static void main(String[] args) {
@@ -44,7 +46,7 @@ public class Start2020 {
     public void run(int day) {
         long totalTime = 0;
         ColorConsole.printStars("/r", "/g", "AoC 2020, Day " + day, 40);
-        ColorConsole.print("/wPreparing input...");
+        ColorConsole.print("/wPreparing input...//\n");
         long start = System.nanoTime();
         objects.get("" + day).prepare(IO.getInput("2020day" + day + ".txt"));
         long end = System.nanoTime();
