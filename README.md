@@ -1,6 +1,6 @@
 # Advent of Code 2020
 
-Here are the solution to (almost all of) the Exercises to the [AoC2020](https://adventofcode.com/2020) Challenges
+Here are the solution to (**all** of) the Exercises to the [AoC2020](https://adventofcode.com/2020) Challenges. It is mostly written in Java, some in Javascript and one in Scratch
 
 ## Usage
 
